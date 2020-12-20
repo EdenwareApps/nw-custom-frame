@@ -440,13 +440,8 @@
 					});
 				}
                 
-                var uiIconsTheme = path.resolve(__dirname, 'icons/css/nw-cf-fa.css');
-                
-				if(options.uiIconsTheme !== undefined && options.uiIconsTheme !== "") {
-                    if(fs.existsSync(options.uiIconsTheme)) {
-                        uiIconsTheme = options.uiIconsTheme;
-                    }
-				}
+		var _path = __dirname.replace(process.cwd(), '').replace(new RegExp('\\\\', 'g'), '/').substr(1)
+                var uiIconsTheme = _path + '/icons/css/nw-cf-fa.css';
                 
                 new Promise(function(res) {
 
@@ -472,38 +467,15 @@
                     onLoad();
                 });
                 
-				if(options.theme !== undefined && options.theme !== "") {
-					new Promise(function(res) {
+				var linkHref = path.resolve(__dirname, _defaultTheme);
 
-						if(fs.existsSync(options.theme)) {
-							var link = document.createElement('link');
-							link.setAttribute('rel', 'stylesheet');
-							link.setAttribute('type', 'text/css');
-							link.setAttribute('href', options.theme);
-							link.onload = function(e) {
-								res(e);
-							}; 
-							link.async = false;
-							that.document.head.appendChild(link);
-						} else {
-							res();
-						}
-					}).then(function() {
-						themeLoaded = true;
-						onLoad();
-					});
-				} else {
-                    var linkHref = path.resolve(__dirname, _defaultTheme);
-
-                    if(fs.existsSync(linkHref)) {
-                        var link = document.createElement('style');
-                        link.innerHTML = fs.readFileSync(linkHref);
-                        that.document.head.appendChild(link);
-                    }
-					themeLoaded = true;
-					onLoad();
+				if(fs.existsSync(linkHref)) {
+					var link = document.createElement('style');
+					link.innerHTML = fs.readFileSync(linkHref);
+					that.document.head.appendChild(link);
 				}
-				
+				themeLoaded = true;
+				onLoad();		
 				
 			} else {
 				finish();
